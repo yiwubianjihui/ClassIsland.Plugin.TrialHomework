@@ -1,0 +1,29 @@
+<ci:ComponentBase x:Class="ClassIsland.Plugin.TrialHomework.Controls.TrialDutyComponent"
+                  x:TypeArguments="componentSettings:TrialDutyComponentSettings"
+                  xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                  xmlns:componentSettings="clr-namespace:ClassIsland.Plugin.TrialHomework.Models"
+                  mc:Ignorable="d"
+                  d:DesignHeight="100" d:DesignWidth="420">
+    <Border x:Name="RootCard"
+            CornerRadius="8"
+            Padding="12,8"
+            IsVisible="False"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1">
+        <StackPanel>
+            <TextBlock x:Name="TitleText"
+                       FontWeight="Bold"
+                       FontSize="14"/>
+            <TextBlock x:Name="NamesText"
+                       Margin="0,4,0,0"
+                       TextWrapping="Wrap"
+                       Opacity="0.85"
+                       FontSize="13"/>
+        </StackPanel>
+    </Border>
+</ci:ComponentBase>

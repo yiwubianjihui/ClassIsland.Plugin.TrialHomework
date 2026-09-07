@@ -1,0 +1,8 @@
+id: yibianhui.trialhomework
+name: 试写作业助手
+description: 每日试写作业名单展示与提醒：课间在主界面显示名单，上课自动隐藏，并可在下午试写课前定时提醒。
+entranceAssembly: "ClassIsland.Plugin.TrialHomework.dll"
+url: https://github.com/Yibianhui/ClassIsland.Plugin.TrialHomework
+apiVersion: 2.0.0.0
+version: 1.0.0.0
+author: Yibianhui

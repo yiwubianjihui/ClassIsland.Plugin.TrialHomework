@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build plugin
+        run: dotnet build -c Release
+
+      - name: Upload cipx artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClassIsland.Plugin.TrialHomework-cipx
+          path: cipx/*.cipx
+          if-no-files-found: error
+
+      - name: Attach cipx to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: cipx/*.cipx

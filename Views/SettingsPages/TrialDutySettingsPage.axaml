@@ -1,0 +1,97 @@
+<ci:SettingsPageBase x:Class="ClassIsland.Plugin.TrialHomework.Views.SettingsPages.TrialDutySettingsPage"
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                     xmlns:local="clr-namespace:ClassIsland.Plugin.TrialHomework.Views.SettingsPages"
+                     mc:Ignorable="d"
+                     d:DesignHeight="900" d:DesignWidth="640">
+    <ScrollViewer>
+        <StackPanel Spacing="14"
+                    MaxWidth="640"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,8,24">
+
+            <TextBlock Text="工作方式" FontSize="16" FontWeight="Bold"/>
+            <TextBlock TextWrapping="Wrap" Opacity="0.8"
+                       Text="试写作业是学校为控制作业量开展的活动：每天由 3~4 位同学在下午的课上试写当天全部作业。本插件按「名单组 → 星期」管理名单，每周确认一整周、每月自动轮换一组。把「试写作业名单」组件添加到主界面后，课间会显示当天名单，上课时自动隐藏；每天到达提醒时间时，会以课堂提醒的方式弹出当天的试写名单。"/>
+
+            <TextBlock Text="今日名单预览" FontSize="16" FontWeight="Bold"/>
+            <Border CornerRadius="8" Padding="12"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1">
+                <TextBlock Text="{Binding TodayNamesText}" TextWrapping="Wrap" FontWeight="Bold"/>
+            </Border>
+
+            <TextBlock Text="名单组" FontSize="16" FontWeight="Bold"/>
+            <TextBlock TextWrapping="Wrap" Opacity="0.8"
+                       Text="每个组内按星期填写名单，多个名字之间用空格、顿号或逗号分隔。开启「按月轮换」后，1 月使用第 1 组、2 月使用第 2 组……以此循环；关闭后使用下方手动选中的组。"/>
+            <ComboBox x:Name="ComboBoxGroup"
+                      ItemsSource="{Binding Groups}"
+                      SelectedItem="{Binding EffectiveGroup, Mode=OneWay}"
+                      SelectionChanged="ComboBoxGroup_OnSelectionChanged"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="添加组" Click="ButtonAddGroup_OnClick"/>
+                <Button Content="删除当前组" Click="ButtonRemoveGroup_OnClick"/>
+                <ToggleSwitch Content="按月轮换" IsChecked="{Binding Settings.AutoRotateByMonth}"/>
+            </StackPanel>
+
+            <TextBlock Text="编辑名单" FontSize="16" FontWeight="Bold"/>
+            <Grid ColumnDefinitions="48,*">
+                <TextBlock Grid.Column="0" Text="周一" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="当天名单，如：张三、李四" Text="{Binding EffectiveGroup.Monday}"/>
+            </Grid>
+            <Grid ColumnDefinitions="48,*">
+                <TextBlock Grid.Column="0" Text="周二" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="当天名单" Text="{Binding EffectiveGroup.Tuesday}"/>
+            </Grid>
+            <Grid ColumnDefinitions="48,*">
+                <TextBlock Grid.Column="0" Text="周三" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="当天名单" Text="{Binding EffectiveGroup.Wednesday}"/>
+            </Grid>
+            <Grid ColumnDefinitions="48,*">
+                <TextBlock Grid.Column="0" Text="周四" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="当天名单" Text="{Binding EffectiveGroup.Thursday}"/>
+            </Grid>
+            <Grid ColumnDefinitions="48,*">
+                <TextBlock Grid.Column="0" Text="周五" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="当天名单" Text="{Binding EffectiveGroup.Friday}"/>
+            </Grid>
+            <Grid ColumnDefinitions="48,*">
+                <TextBlock Grid.Column="0" Text="周六" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="当天名单" Text="{Binding EffectiveGroup.Saturday}"/>
+            </Grid>
+            <Grid ColumnDefinitions="48,*">
+                <TextBlock Grid.Column="0" Text="周日" VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Watermark="当天名单" Text="{Binding EffectiveGroup.Sunday}"/>
+            </Grid>
+
+            <TextBlock Text="下午提醒" FontSize="16" FontWeight="Bold"/>
+            <ToggleSwitch Content="启用下午试写提醒" IsChecked="{Binding Settings.EnableReminder}"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="提醒时间" VerticalAlignment="Center"/>
+                <TextBox Watermark="HH:mm，如 14:20" Text="{Binding Settings.ReminderTime}" Width="140"/>
+            </StackPanel>
+            <ToggleSwitch Content="仅周一至周五提醒" IsChecked="{Binding Settings.ReminderOnSchoolDaysOnly}"/>
+            <TextBlock TextWrapping="Wrap" Opacity="0.8"
+                       Text="提醒文本中的 {names} 会替换成当天的名单。应用在提醒时间之后才启动时，30 分钟内仍会补发提醒。"/>
+            <TextBox Text="{Binding Settings.ReminderMessage}"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Height="96"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="测试提醒" Click="ButtonTestReminder_OnClick"/>
+                <Button Content="刷新预览" Click="ButtonRefresh_OnClick"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</ci:SettingsPageBase>

@@ -1,0 +1,24 @@
+<ci:ComponentBase x:Class="ClassIsland.Plugin.TrialHomework.Controls.TrialDutyComponentSettingsControl"
+                  x:TypeArguments="componentSettings:TrialDutyComponentSettings"
+                  xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                  xmlns:local="clr-namespace:ClassIsland.Plugin.TrialHomework.Controls"
+                  xmlns:componentSettings="clr-namespace:ClassIsland.Plugin.TrialHomework.Models"
+                  mc:Ignorable="d"
+                  d:DesignHeight="240" d:DesignWidth="360">
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:TrialDutyComponentSettingsControl}}">
+        <StackPanel Spacing="8" MinWidth="280" HorizontalAlignment="Left">
+            <TextBox Watermark="组件标题，如：今日试写作业"
+                     Text="{Binding Settings.Title}"/>
+            <ToggleSwitch Content="仅课间显示（上课时自动隐藏）"
+                          IsChecked="{Binding Settings.ShowOnlyOnBreak}"/>
+            <ToggleSwitch Content="放学后继续显示"
+                          IsChecked="{Binding Settings.ShowOnAfterSchool}"/>
+            <ToggleSwitch Content="当天没有名单时隐藏"
+                          IsChecked="{Binding Settings.HideWhenEmpty}"/>
+        </StackPanel>
+    </Grid>
+</ci:ComponentBase>
