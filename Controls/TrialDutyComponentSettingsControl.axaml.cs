@@ -1,4 +1,5 @@
 using ClassIsland.Core.Abstractions.Controls;
+using ClassIsland.Plugin.TrialHomework.Models;
 
 namespace ClassIsland.Plugin.TrialHomework.Controls;
 

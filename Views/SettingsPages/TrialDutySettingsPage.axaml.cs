@@ -23,7 +23,7 @@ public partial class TrialDutySettingsPage : SettingsPageBase, INotifyPropertyCh
     private TrialGroup? _effectiveGroup;
     private string _todayNamesText = "";
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public new event PropertyChangedEventHandler? PropertyChanged;
 
     public ObservableCollection<TrialGroup> Groups => Settings.Groups;
 
