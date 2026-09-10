@@ -16,11 +16,11 @@
 
 ## 📦 安装
 
-1. 前往 [Releases](https://github.com/Yibianhui/ClassIsland.Plugin.TrialHomework/releases) 下载最新的 `.cipx` 插件包；
+1. 前往 [Releases](https://github.com/yiwubianjihui/ClassIsland.Plugin.TrialHomework/releases) 下载最新的 `.cipx` 插件包；
 2. 打开 ClassIsland → 设置 → 插件 → 安装插件，选择下载的 `.cipx` 文件；
 3. 安装后重启 ClassIsland。
 
-> 也可以在 [Actions](https://github.com/Yibianhui/ClassIsland.Plugin.TrialHomework/actions) 页面下载最新构建产物。
+> 也可以在 [Actions](https://github.com/yiwubianjihui/ClassIsland.Plugin.TrialHomework/actions) 页面下载最新构建产物。
 
 ## 🚀 使用
 
@@ -37,7 +37,7 @@
 ## 🛠️ 从源码构建
 
 ```bash
-git clone https://github.com/Yibianhui/ClassIsland.Plugin.TrialHomework.git
+git clone https://github.com/yiwubianjihui/ClassIsland.Plugin.TrialHomework.git
 cd ClassIsland.Plugin.TrialHomework
 dotnet build -c Release
 ```

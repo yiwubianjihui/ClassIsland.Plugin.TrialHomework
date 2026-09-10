@@ -8,6 +8,7 @@ using ClassIsland.Core.Attributes;
 using ClassIsland.Plugin.TrialHomework.Models;
 using ClassIsland.Plugin.TrialHomework.Services;
 using ClassIsland.Shared;
+using Microsoft.Extensions.Hosting;
 
 namespace ClassIsland.Plugin.TrialHomework.Views.SettingsPages;
 
@@ -97,7 +98,13 @@ public partial class TrialDutySettingsPage : SettingsPageBase, INotifyPropertyCh
 
     private void ButtonTestReminder_OnClick(object? sender, RoutedEventArgs e)
     {
-        IAppHost.GetService<TrialDutyReminderProvider>()?.ShowReminder(true);
+        // 注意：AddNotificationProvider<T> 只把提醒提供方注册为 IHostedService，
+        // 并未注册为 DI 服务 T 本身；直接 IAppHost.GetService<TrialDutyReminderProvider>()
+        // 会抛 ArgumentException（并导致插件被判定异常而自动禁用）。
+        var provider = IAppHost.TryGetService<IEnumerable<IHostedService>>()
+            ?.OfType<TrialDutyReminderProvider>()
+            .FirstOrDefault();
+        provider?.ShowReminder(true);
     }
 
     private void ButtonRefresh_OnClick(object? sender, RoutedEventArgs e)

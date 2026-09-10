@@ -1,5 +1,5 @@
 using System.Globalization;
-using Avalonia.Threading;
+using ClassIsland.Core.Abstractions.Services;
 using ClassIsland.Core.Abstractions.Services.NotificationProviders;
 using ClassIsland.Core.Attributes;
 using ClassIsland.Core.Models.Notification;
@@ -23,80 +23,66 @@ public class TrialDutyReminderProvider : NotificationProviderBase
     private ILogger<TrialDutyReminderProvider> Logger { get; }
     private PluginSettings Settings { get; }
     private TrialDutyService DutyService { get; }
+    private ILessonsService LessonsService { get; }
+    private IExactTimeService ExactTimeService { get; }
 
-    private DispatcherTimer? _timer;
     private DateTime _lastFiredDate = DateTime.MinValue;
 
     public TrialDutyReminderProvider(PluginSettings settings, TrialDutyService dutyService,
+        ILessonsService lessonsService, IExactTimeService exactTimeService,
         ILogger<TrialDutyReminderProvider> logger)
     {
         Settings = settings;
         DutyService = dutyService;
+        LessonsService = lessonsService;
+        ExactTimeService = exactTimeService;
         Logger = logger;
+
+        // 提醒提供方经 AddNotificationProvider 注册为 IHostedService，但基类 StartAsync 为非虚空实现，
+        // 重写/隐藏它都不会被宿主调用（曾因此导致定时提醒从未触发）。改为订阅主计时器
+        // （每秒一次，与课表同一节奏）来检查提醒时间。
+        LessonsService.PostMainTimerTicked += OnPostMainTimerTicked;
     }
 
-    public new Task StartAsync(CancellationToken cancellationToken)
+    private void OnPostMainTimerTicked(object? sender, EventArgs e)
     {
-        Dispatcher.UIThread.Post(StartTimer);
-        return Task.CompletedTask;
+        try
+        {
+            CheckAndNotify();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "检查试写作业提醒时出现异常。");
+        }
     }
 
-    public new Task StopAsync(CancellationToken cancellationToken)
+    private void CheckAndNotify()
     {
-        _timer?.Stop();
-        return Task.CompletedTask;
-    }
-
-    private void StartTimer()
-    {
-        if (_timer != null)
+        var now = ExactTimeService.GetCurrentLocalDateTime();
+        if (!Settings.EnableReminder || _lastFiredDate.Date == now.Date)
         {
             return;
         }
 
-        _timer = new DispatcherTimer
+        if (Settings.ReminderOnSchoolDaysOnly && now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
         {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-        _timer.Tick += (_, _) => OnTick();
-        _timer.Start();
-        Logger.LogInformation("试写作业提醒计时器已启动。");
-    }
-
-    private void OnTick()
-    {
-        try
-        {
-            var now = DateTime.Now;
-            if (!Settings.EnableReminder || _lastFiredDate.Date == now.Date)
-            {
-                return;
-            }
-
-            if (Settings.ReminderOnSchoolDaysOnly && now.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-            {
-                return;
-            }
-
-            var raw = Settings.ReminderTime?.Trim().Replace('：', ':') ?? "";
-            if (!TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out var timeOfDay))
-            {
-                return;
-            }
-
-            var elapsed = now - (now.Date + timeOfDay);
-            if (elapsed < TimeSpan.Zero || elapsed > MakeupWindow)
-            {
-                return;
-            }
-
-            _lastFiredDate = now.Date;
-            ShowReminder(false);
+            return;
         }
-        catch (Exception e)
+
+        var raw = Settings.ReminderTime?.Trim().Replace('：', ':') ?? "";
+        if (!TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out var timeOfDay))
         {
-            Logger.LogError(e, "触发试写作业提醒时出现异常。");
+            return;
         }
+
+        var elapsed = now - (now.Date + timeOfDay);
+        if (elapsed < TimeSpan.Zero || elapsed > MakeupWindow)
+        {
+            return;
+        }
+
+        _lastFiredDate = now.Date;
+        ShowReminder(false);
     }
 
     /// <summary>
@@ -108,8 +94,14 @@ public class TrialDutyReminderProvider : NotificationProviderBase
         var names = DutyService.GetNamesTextFor(DateTime.Now);
         if (string.IsNullOrWhiteSpace(names))
         {
-            Logger.LogInformation("今天没有试写作业名单，跳过{}提醒。", isTest ? "测试" : "");
-            return;
+            if (!isTest)
+            {
+                Logger.LogInformation("今天没有试写作业名单，跳过提醒。");
+                return;
+            }
+
+            // 测试提醒：名单为空时也要有可见效果，便于确认提醒链路正常。
+            names = "（今日暂无名单）";
         }
 
         var text = (Settings.ReminderMessage ?? "").Replace("{names}", names);

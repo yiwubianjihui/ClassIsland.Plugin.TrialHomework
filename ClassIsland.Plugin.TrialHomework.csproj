@@ -8,7 +8,7 @@
     <Configurations>Debug;Release;Debug_MSIX;Release_MSIX</Configurations>
     <CreateCipx>true</CreateCipx>
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>
