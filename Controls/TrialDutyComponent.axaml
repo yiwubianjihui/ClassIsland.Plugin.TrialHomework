@@ -7,23 +7,35 @@
                   xmlns:ci="http://classisland.tech/schemas/xaml/core"
                   xmlns:componentSettings="clr-namespace:ClassIsland.Plugin.TrialHomework.Models"
                   mc:Ignorable="d"
-                  d:DesignHeight="100" d:DesignWidth="420">
+                  d:DesignHeight="40" d:DesignWidth="420">
+    <!-- 注意：ClassIsland 主界面组件容器的最大高度被写死为 IslandContainerHeight（=40），
+         且官方内置组件（文本/日期/时钟）均为单行 + 纵向居中。
+         因此这里必须保持单行排布：一旦内容变成两行，卡片高度会超出容器上限而被裁掉，
+         表现为第二行文字被遮挡。纵向留白也需保持克制（4px × 2）。 -->
     <Border x:Name="RootCard"
             CornerRadius="8"
-            Padding="12,8"
+            Padding="10,4"
             IsVisible="False"
+            VerticalAlignment="Center"
             Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
             BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
             BorderThickness="1">
-        <StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Spacing="6">
             <TextBlock x:Name="TitleText"
                        FontWeight="Bold"
-                       FontSize="14"/>
+                       VerticalAlignment="Center"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis"/>
+            <TextBlock Text="·"
+                       Opacity="0.4"
+                       VerticalAlignment="Center"/>
             <TextBlock x:Name="NamesText"
-                       Margin="0,4,0,0"
-                       TextWrapping="Wrap"
                        Opacity="0.85"
-                       FontSize="13"/>
+                       VerticalAlignment="Center"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis"/>
         </StackPanel>
     </Border>
 </ci:ComponentBase>
