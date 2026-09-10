@@ -4,5 +4,5 @@ description: 每日试写作业名单展示与提醒：课间在主界面显示�
 entranceAssembly: "ClassIsland.Plugin.TrialHomework.dll"
 url: https://github.com/yiwubianjihui/ClassIsland.Plugin.TrialHomework
 apiVersion: 2.0.0.0
-version: 1.0.0.1
+version: 1.0.0.2
 author: Yibianhui

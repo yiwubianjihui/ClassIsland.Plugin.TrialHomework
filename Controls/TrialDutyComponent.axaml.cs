@@ -20,13 +20,16 @@ public partial class TrialDutyComponent : ComponentBase<TrialDutyComponentSettin
 {
     private TrialDutyService DutyService { get; }
     private ILessonsService LessonsService { get; }
+    private IComponentsService ComponentsService { get; }
 
     private bool _settingsHooked;
 
-    public TrialDutyComponent(TrialDutyService dutyService, ILessonsService lessonsService)
+    public TrialDutyComponent(TrialDutyService dutyService, ILessonsService lessonsService,
+        IComponentsService componentsService)
     {
         DutyService = dutyService;
         LessonsService = lessonsService;
+        ComponentsService = componentsService;
         InitializeComponent();
 
         LessonsService.OnClass += OnLessonsStateChanged;
@@ -95,6 +98,13 @@ public partial class TrialDutyComponent : ComponentBase<TrialDutyComponentSettin
             visible = false;
         }
 
+        // 组件管理（编辑）模式下始终显示，否则上课时组件被隐藏后将难以选中调整。
+        if (ComponentsService.IsManagementMode)
+        {
+            visible = true;
+        }
+
+        // 仅隐藏卡片内容而不隐藏组件自身：保持主界面布局稳定，上课时也不留视觉遮挡。
         RootCard.IsVisible = visible;
     }
 }
